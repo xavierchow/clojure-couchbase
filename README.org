@@ -1,0 +1,47 @@
+#+TITLE:     clojure-couchbase
+#+AUTHOR:    Xavier Zhou
+#+EMAIL:     (concat "xiayezhou" at-sign "gmail.com")
+* clojure-couchbase
+
+A Clojure library for Couchbase 7 with SDK 3.x.
+
+* Usage
+
+#+begin_src clojure
+(require '[clojure-couchbase.cluster :as clus]
+         '[clojure-couchbase.collection :as col])
+
+(def cluster (clus/connect "couchbase://localhost" username password))
+(def collection (col/get-collection cluster test-bucket))
+
+;; insert doc
+(col/upsert collection id  {:a 1 :b 2})
+
+;; read doc
+(col/get collection id)
+  ;; => { :content {:a 1 :b 2} }
+
+(clus/query cluster "SELECT b.* FROM `bucket-name` b where name = \"smith\"")
+  ;; => { :status  QueryStatus/SUCCESS :rows [{:foo "xxx" :name "smith"}]}
+
+;; tear down
+(clus/disconnect cluster)
+
+#+end_src
+
+
+
+* How to run test code
+
+#+begin_src shell
+ lein deps
+ ./docker/up.sh
+ lein test
+
+#+end_src
+
+
+
+* License
+
+MIT
